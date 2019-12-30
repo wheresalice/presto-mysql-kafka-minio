@@ -1,6 +1,6 @@
-# Prestodb with MySQL and Kafka
+# Presto with MySQL and Kafka
 
-PrestoDB, MySQL and Kafka in Docker.  Query your MySQL data and join it to Kafka data.
+Presto, MySQL and Kafka in Docker.  Query your MySQL data and join it to Kafka data.
 
 This repository includes docker-compose setup to join MySQL and Kafka data using Presto, along with some notes on how to load the data and perform the queries.  It is deliberately not fully automated to guide the user through performing this.
 
@@ -36,7 +36,7 @@ chmod 755 kafka-tpch
 exit
 ```
 
-Get access to PrestoDB:
+Get access to Presto:
 
 ```shell script
 docker-compose exec presto presto
@@ -67,8 +67,8 @@ View what's happening through the Presto UI: http://localhost:8080/ui/
 
 ## Known Issues
 
-* The data in Kafka has to be in JSON or plain Avro to be able to parse it in Presto.  There is [not currently](https://github.com/prestodb/presto/issues/11354) any support for Confluent Avro with Schema Registry.
+* The data in Kafka has to be in JSON or plain Avro to be able to parse it in Presto.  There is [not currently](https://github.com/prestosql/presto/issues/2105) any support for Confluent Avro with Schema Registry.
 
 ## Further Reading
 
-* [Presto Kafka Connector](https://prestodb.io/docs/current/connector/kafka.html)
+* [Presto Kafka Connector](https://prestosql.io/docs/current/connector/kafka.html)
