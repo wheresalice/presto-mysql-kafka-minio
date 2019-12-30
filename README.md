@@ -4,9 +4,11 @@ PrestoDB, MySQL and Kafka in Docker.  Query your MySQL data and join it to Kafka
 
 This repository includes docker-compose setup to join MySQL and Kafka data using Presto, along with some notes on how to load the data and perform the queries.  It is deliberately not fully automated to guide the user through performing this.
 
+![img/Presto.png](img/Presto.png)
+
 ## Usage
 
-Launch everything:
+Launch everything (Presto, Zookeeper, Kafka, MySQL):
 
 ```shell script
 docker-compose up
