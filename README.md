@@ -1,4 +1,4 @@
-# Presto with MySQL and Kafka
+# Presto with MySQL, Minio and Kafka
 
 Presto, MySQL, Minio and Kafka in Docker.  Query your MySQL data and join it to Kafka and Minio data.
 
