@@ -1,14 +1,14 @@
 # Presto with MySQL and Kafka
 
-Presto, MySQL and Kafka in Docker.  Query your MySQL data and join it to Kafka data.
+Presto, MySQL, Minio and Kafka in Docker.  Query your MySQL data and join it to Kafka and Minio data.
 
-This repository includes docker-compose setup to join MySQL and Kafka data using Presto, along with some notes on how to load the data and perform the queries.  It is deliberately not fully automated to guide the user through performing this.
+This repository includes docker-compose setup to join MySQL, Minio and Kafka data using Presto, along with some notes on how to load the data and perform the queries.  It is deliberately not fully automated to guide the user through performing this.
 
 ![img/Presto.png](img/Presto.png)
 
 ## Usage
 
-Launch everything (Presto, Zookeeper, Kafka, MySQL):
+Launch everything (Presto, Zookeeper, Kafka, MySQL, Minio):
 
 ```shell script
 docker-compose up
@@ -52,18 +52,42 @@ show tables;
 Query Kafka data in Presto:
 
 ```sql
-use kafka.tpch;
 SELECT _message FROM customer LIMIT 5;
-SELECT sum(account_balance) FROM customer LIMIT 10;
+SELECT sum(account_balance) FROM kafka.tpch.customer LIMIT 10;
 ```
 
 Join the two together:
 
 ```sql
-SELECT customer.account_balance, contacts.email FROM customer, mysql.wheresalice.contacts contacts WHERE customer.customer_key = contacts.customer_key;
+SELECT customer.account_balance, contacts.email FROM kafka.tpch.customer, mysql.wheresalice.contacts contacts WHERE customer.customer_key = contacts.customer_key;
 ```
 
 View what's happening through the Presto UI: http://localhost:8080/ui/
+
+### Minio/S3
+
+Minio is included in this stack to mock out S3.  It currently takes a little manual configuration to use.
+
+```shell script
+docker-compose exec minio /bin/sh
+mkdir -p /data/catalog/ && mkdir -p /data/csvdata
+echo "alice@example.com,alice" > /data/csvdata/data.csv
+exit
+```
+
+Then create the table in Presto shell to query:
+
+```sql
+create schema s3.default;
+create table s3.default.users (email varchar, username varchar) WITH (external_location='s3a://csvdata/',format = 'csv');
+select * from s3.default.users;
+SELECT users.username, contacts.customer_key FROM s3.default.users, mysql.wheresalice.contacts WHERE users.email = contacts.email;
+```
+
+You can also upload data into Minio using a web browser via http://localhost:9000
+
+Access Key: minio
+Secret Key: minio123
 
 ## Known Issues
 
